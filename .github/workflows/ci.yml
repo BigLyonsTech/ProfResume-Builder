@@ -34,22 +34,22 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        working-directory: .
+        working-directory: ./backend
         run: mvn clean compile -B
 
       - name: Run Tests
-        working-directory: .
+        working-directory: ./backend
         run: mvn test -B
 
       - name: Package JAR
-        working-directory: .
+        working-directory: ./backend
         run: mvn package -DskipTests -B
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
           name: backend-jar
-          path: target/*.jar
+          path: backend/target/*.jar
 
   # ── Job 2: Build Frontend ────────────────────────────────
   frontend-build:
@@ -95,8 +95,8 @@ jobs:
       - name: Build Backend Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./Dockerfile
+          context: ./backend
+          file: ./backend/Dockerfile
           push: false     # Set to true + add Docker Hub credentials to push
           tags: resume-builder-backend:latest
 

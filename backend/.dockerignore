@@ -1,0 +1,12 @@
+# Backend .dockerignore
+# Tells Docker what NOT to copy into the build context
+# Smaller context = faster builds
+
+target/
+*.iml
+.idea/
+.vscode/
+*.log
+.git/
+.gitignore
+README.md

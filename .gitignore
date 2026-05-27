@@ -1,0 +1,37 @@
+# ============================================================
+#   Resume Builder — .gitignore
+# ============================================================
+
+# ── Java / Maven ─────────────────────────────────────────
+target/
+*.class
+*.jar
+*.war
+*.ear
+.mvn/wrapper/maven-wrapper.jar
+
+# ── Node / React ─────────────────────────────────────────
+node_modules/
+dist/
+.vite/
+frontend/.env.local
+
+# ── IDE ───────────────────────────────────────────────────
+.idea/
+*.iml
+.vscode/
+*.suo
+*.user
+
+# ── OS ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Logs ─────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Environment files (never commit secrets) ─────────────
+.env
+.env.*
+!.env.example

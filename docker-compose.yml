@@ -1,0 +1,67 @@
+# ============================================================
+#   Resume Builder — Docker Compose
+#
+#   Starts the full application with one command:
+#     docker-compose up --build
+#
+#   Services:
+#     backend  → Spring Boot API  (port 8080)
+#     frontend → React via Nginx  (port 3000)
+#
+#   Access:
+#     App       → http://localhost:3000
+#     API       → http://localhost:8080/api
+#     H2 Console→ http://localhost:8080/h2-console
+# ============================================================
+
+version: "3.9"
+
+services:
+
+  # ── Spring Boot Backend ───────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: resume-builder-backend
+    ports:
+      - "8080:8080"
+    environment:
+      # Override any application.properties values here
+      - SPRING_PROFILES_ACTIVE=default
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:resumedb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      - SPRING_H2_CONSOLE_ENABLED=true
+      - APP_CORS_ALLOWED_ORIGINS=http://localhost:3000
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/resumes"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - resume-network
+    restart: unless-stopped
+
+
+  # ── React Frontend ────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: resume-builder-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy   # Wait until backend is healthy before starting
+    networks:
+      - resume-network
+    restart: unless-stopped
+
+
+# ── Shared Network ────────────────────────────────────────
+# Both containers talk to each other using service names
+# e.g. frontend proxies /api/* → http://backend:8080
+networks:
+  resume-network:
+    driver: bridge

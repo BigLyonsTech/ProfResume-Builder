@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 
-const API = "http://localhost:8080/api";
+const API = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
 
 // ═══════════════════════════════════════════════════════════════
 //  GLOBAL STYLES
